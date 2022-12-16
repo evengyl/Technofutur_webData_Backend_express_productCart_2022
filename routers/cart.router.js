@@ -1,12 +1,12 @@
 const express = require('express')
 
 /* controller */
-const productController = require('../controllers/product.controller')
+const cartController = require('../controllers/cart.controller')
 
 const router = express.Router()
 
-router.get('/', productController.getAll)                 
-router.get('/:id([0-9]+)', productController.getOne)      
-router.delete('/:id([0-9]+)', productController.delete) 
+router.get('/', cartController.getAll)                 
+router.delete('/:id([0-9]+)', cartController.delete)
+router.post("/", cartController.createCart, cartController.addProductToCart)
 
 module.exports = router

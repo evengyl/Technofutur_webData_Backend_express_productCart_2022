@@ -30,9 +30,9 @@ const CartModel = {
         })
     },
 
-    addProductCart : (cartId, productId, currentPrice, qty) => {
+    addProductCart : (cartId, productId, qty) => {
         return dbConnect.then((conn) => {
-            return conn.query("Insert into productsCarts (cartId, productId, currentPrice, qty) values (?, ?, ?, ?", [cartId, productId, currentPrice, qty])
+            return conn.query("Insert into productsCarts (cartId, productId, currentPrice, qty) values (?, ?, (select price from products where id = ?), ?)", [cartId, productId, productId, qty])
         })
     },
     

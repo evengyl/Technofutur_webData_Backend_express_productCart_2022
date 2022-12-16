@@ -10,10 +10,11 @@ const cartController = {
         })
     },
 
-    createCart : (req, res) => {
+    createCart : (req, res, next) => {
 
-        CartModel.create(req.body.name).then((result) => {
-            res.status(201).json({ id : result.insertId})
+        CartModel.create(req.body.nameCart).then((result) => {
+            res.locals.idCartCreated = result.insertId
+            next()
         })
         .catch((error) => {
             res.status(500).json({ message : error.sqlMessage})
@@ -21,12 +22,28 @@ const cartController = {
     },
 
     addProductToCart : (req, res) => {
-        CartModel.addProduct(cartId, productId, currentPrice, qty).then((result) => {
-            res.status(201).json({ id : result.insertId})
-        })
-        .catch((error) => {
-            res.status(500).json({ message : error.sqlMessage})
-        })
+        
+        if(req.body.cart)
+        {
+            let cartId = res.locals.idCartCreated
+            let cart = req.body.cart
+
+            if(cart[0] != undefined)
+            {
+                cart.forEach((product) => {
+                    CartModel.addProductCart(cartId, product.productId, product.qty)
+                    .then(_ => {})
+                    .catch((error) => {
+                        res.status(500).json({ message : error.sqlMessage})
+                    })
+                })
+
+                res.status(201).json({ idCart : cartId})
+            }
+
+        }
+/*
+        */
     },
 
     delete : (req, res) => {
@@ -48,4 +65,4 @@ const cartController = {
 }
 
 
-module.exports = productController
+module.exports = cartController
